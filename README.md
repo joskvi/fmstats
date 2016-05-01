@@ -1,1 +1,1 @@
-This is the README
+Pulls LastFM data and creates various stats.
