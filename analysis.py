@@ -4,11 +4,7 @@ import re
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-xml_file = 'all_tracks.xml'
-csv_file = 'all_tracks.csv'
-
+from scipy.interpolate import spline
 
 # CLEANUP FUNCTIONS
 
@@ -108,6 +104,10 @@ def most_played_scaled(tracks, sort_by='artist'):
 
 def create_plot(alltracks):
 
+    # Set plot type
+    create_smoothed_plot = False
+    add_edge_data = True
+
     # Arange track data
     tracks_grouped_by_month = group_plays(alltracks)
     monthly_time = tracks_grouped_by_month[:,1]
@@ -134,13 +134,45 @@ def create_plot(alltracks):
             monthly_stats[artists.index(artist_stat[0])] = artist_stat[1]
         total_stats[:,month] = monthly_stats
 
-    # Create a fig with a subplot
+    if add_edge_data:
+        # Add zeros column to total_stats
+        zero_column = np.zeros(number_of_artists, dtype=int)
+        total_stats = np.column_stack([zero_column, total_stats, zero_column])
+        number_of_months += 2
+
+    # Skew data
+    max_column_sum = np.array([column.sum() for column in total_stats.T]).max()
+    skewing_row = np.zeros(number_of_months, dtype=int)
+    for month, column in enumerate(total_stats.T):
+        column_sum = column.sum()
+        if column_sum < max_column_sum:
+            skewing_row[month] = (max_column_sum - column_sum)/2
+    total_stats = np.vstack([skewing_row, total_stats])
+
     time = np.arange(number_of_months)
+
+    if create_smoothed_plot:
+        # Give the data plot smoothed curves
+
+        interpolation_points = 300
+        time_smoothed = np.linspace(time.min(),time.max(), interpolation_points)
+        total_stats_smoothed = np.zeros((number_of_artists, interpolation_points))
+
+        for i in range(number_of_artists):
+            total_stats_smoothed[i,:]=spline(time,total_stats[i,:],time_smoothed)
+
+        total_stats = total_stats_smoothed
+        time = time_smoothed
+
+
+    # Create a fig with a subplot
     fig, ax = plt.subplots(figsize=(20, 10))
 
     # Set colormap
     cm = plt.get_cmap('Paired')
-    ax.set_color_cycle([cm(1.*i/number_of_artists) for i in range(number_of_artists)])
+    color_cycle = [cm(1.*i/number_of_artists) for i in range(number_of_artists)]
+    color_cycle.insert(0, (1.0, 1.0, 1.0))
+    ax.set_color_cycle(color_cycle)
 
     # Plot data
     ax.stackplot(time, total_stats[:,::-1]) # Plot with reverse order, i.e. chronologically, on x-axis
@@ -152,15 +184,9 @@ def create_plot(alltracks):
     # Put a legend to the right of the current axis
     ax.legend(artists, loc='center left', bbox_to_anchor=(1, 0.5))
 
+
     # Modify x-axis
     plt.xticks(np.arange(min(time), max(time)+1, 1.0))
     ax.set_xticklabels(monthly_time[::-1]) # Set x-axis time label in reversed order as the plot order also is reversed
 
     plt.show()
-
-# MAIN
-
-alltracks = read_csv(csv_file)
-alltracks = np.array(alltracks, dtype=object)
-
-create_plot(alltracks)
