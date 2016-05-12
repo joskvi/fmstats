@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 
-# CLEANUP FUNCTIONS
+# FILE I/O FUNCTIONS
 
 def create_csv(xml_file, csv_file):
 
@@ -106,7 +106,7 @@ def create_plot(alltracks):
 
     # Set plot type
     create_smoothed_plot = False
-    add_edge_data = True
+    add_edge_data = False
 
     # Arange track data
     tracks_grouped_by_month = group_plays(alltracks)
@@ -159,7 +159,7 @@ def create_plot(alltracks):
         total_stats_smoothed = np.zeros((number_of_artists, interpolation_points))
 
         for i in range(number_of_artists):
-            total_stats_smoothed[i,:]=spline(time,total_stats[i,:],time_smoothed)
+            total_stats_smoothed[i,:] = spline(time, total_stats[i,:], time_smoothed)
 
         total_stats = total_stats_smoothed
         time = time_smoothed
@@ -182,8 +182,12 @@ def create_plot(alltracks):
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
     # Put a legend to the right of the current axis
-    ax.legend(artists, loc='center left', bbox_to_anchor=(1, 0.5))
 
+    ## QUICKFIX: removing non-ascii chars due to unicode problem in mpl
+    artists = [ ''.join([i if ord(i) < 128 else '_' for i in text]) for text in artists ]
+
+    artists.insert(0,'Skewing plot') # Insert a legend entry for the skewing plot
+    ax.legend(artists, loc='center left', bbox_to_anchor=(1, 0.5))
 
     # Modify x-axis
     plt.xticks(np.arange(min(time), max(time)+1, 1.0))
