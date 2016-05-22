@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!flask/bin/python
 import sys
 import getopt
 import numpy as np
 
 import analysis
 import fetch
+from app import app
 
 # Set constants. Move this to separate file
 username = 'joskvi'
@@ -18,12 +19,13 @@ def usage():
           -i specifies input file name. Must be .csv file, using ; as separator.
           --plot to plot data
           --fetch to download data. Use with argument csv or xml, to specify output filetype. Use with -o
+          --flask to start flask server hosting a simple application for showing user plots
           '''
 
 def main(argv):
 
     try:
-        options, remainders = getopt.getopt(argv, 'hi:o:', ['help','plot','fetch'])
+        options, remainders = getopt.getopt(argv, 'hi:o:', ['help','plot','fetch','flask'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -42,7 +44,9 @@ def main(argv):
             analysis.create_plot(alltracks)
         elif opt == '--fetch':
             fetch.fetch_all_user_data(username, xml_file)
-
+        elif opt == '--flask':
+            app.debug = True
+            app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     main(sys.argv[1:])

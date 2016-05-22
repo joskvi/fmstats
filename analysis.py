@@ -102,7 +102,7 @@ def most_played_scaled(tracks, sort_by='artist'):
     else:
         return most_played(tracks, 3)
 
-def create_plot(alltracks):
+def create_plot(alltracks, show=True):
 
     # Set plot type
     create_smoothed_plot = False
@@ -193,4 +193,7 @@ def create_plot(alltracks):
     plt.xticks(np.arange(min(time), max(time)+1, 1.0))
     ax.set_xticklabels(monthly_time[::-1]) # Set x-axis time label in reversed order as the plot order also is reversed
 
-    plt.show()
+    if show:
+        plt.show()
+    else:
+        return fig
