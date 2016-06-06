@@ -106,7 +106,7 @@ def create_plot(alltracks, show=True):
 
     # Set plot type
     create_smoothed_plot = False
-    add_edge_data = False
+    add_edge_data = True
 
     # Arange track data
     tracks_grouped_by_month = group_plays(alltracks)
