@@ -14,9 +14,11 @@ def plot():
     import StringIO
     from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+    # Do validation on this
     user = request.args.get('user')
 
     # Get figure. This should be changed so that only username will be specified.
+    # Also move all NumPy dependencies to the analysis module, plus additional routines related to the analysis (included png making?).
     csv_file = 'all_tracks_joskvi.csv'
     alltracks = analysis.read_csv(csv_file)
     alltracks = np.array(alltracks, dtype=object)
