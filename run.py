@@ -4,13 +4,13 @@ import getopt
 import numpy as np
 
 import analysis
-import fetch
+import get_user_data
 from app import app
 
 # Set constants. Move this to separate file
 username = 'joskvi'
-xml_file = 'all_tracks_' + username + '.xml'
-csv_file = 'all_tracks_' + username + '.csv'
+xml_file = 'alltracks_' + username + '.xml'
+csv_file = 'alltracks_' + username + '.csv'
 # SPECIFY APIKEY ALSO
 
 def usage():
@@ -43,7 +43,7 @@ def main(argv):
             alltracks = np.array(alltracks, dtype=object)
             analysis.create_plot(alltracks)
         elif opt == '--fetch':
-            fetch.fetch_all_user_data(username, xml_file)
+            get_user_data.fetch_all_user_data(username)
         elif opt == '--flask':
             app.debug = True
             app.run(host='0.0.0.0', port=5000)

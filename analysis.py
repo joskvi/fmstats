@@ -1,5 +1,4 @@
 import xml.etree.cElementTree as ET
-import datefunc
 import re
 import csv
 import numpy as np
@@ -7,30 +6,6 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import spline
 
 # FILE I/O FUNCTIONS
-
-def create_csv(xml_file, csv_file):
-
-    alltracks = parse_xml(xml_file)
-    f = open(csv_file, 'w+')
-
-    for track in alltracks:
-
-        artist = track.find('artist').text
-        name = track.find('name').text
-        album = track.find('album').text
-
-        # Change date formatting from DD Month YYYY to YYYYMMDD
-        date = re.split(r'[, ]+', track.find('date').text)[0:3]
-        date = ''.join([date[2], datefunc.month2num(date[1]), date[0]])
-
-        csvline = '{};{};{};{}\n'.format(date,artist.encode('utf-8'),name.encode('utf-8'),album.encode('utf-8'))
-        f.write(csvline)
-
-    f.close()
-    return
-
-def parse_xml(xml_file):
-    return ET.parse(xml_file).getroot()
 
 def read_csv(csv_file):
 
@@ -98,9 +73,9 @@ def most_played_scaled(tracks, sort_by='artist'):
 
     number_of_tracks = np.shape(tracks)[0]
     if number_of_tracks < 100:
-        return most_played(tracks, 2)
-    else:
         return most_played(tracks, 3)
+    else:
+        return most_played(tracks, 6)
 
 def create_plot(alltracks, show=True):
 
@@ -197,3 +172,14 @@ def create_plot(alltracks, show=True):
         plt.show()
     else:
         return fig
+
+def plot_flask(user):
+
+    print 'Returning plot for user ' + str(user)
+    csv_file = 'alltracks_' + user + '.csv'
+    alltracks = read_csv(csv_file)
+    alltracks = np.array(alltracks, dtype=object)
+
+    return create_plot(alltracks, show = False)
+
+

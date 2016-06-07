@@ -1,3 +1,7 @@
+import analysis
+import StringIO
+
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 from flask import render_template, make_response, request
 from app import app
 
@@ -9,21 +13,13 @@ def index():
 
 @app.route('/plot_img')
 def plot():
-    import analysis
-    import numpy as np
-    import StringIO
-    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    # Return png image of matplotlib plot
 
-    # Do validation on this
     user = request.args.get('user')
+    user = 'joskvi'
 
-    # Get figure. This should be changed so that only username will be specified.
-    # Also move all NumPy dependencies to the analysis module,
-    # plus additional routines related to the analysis (included png making?).
-    csv_file = 'all_tracks_joskvi.csv'
-    alltracks = analysis.read_csv(csv_file)
-    alltracks = np.array(alltracks, dtype=object)
-    fig = analysis.create_plot(alltracks, show = False)
+    # Get figure from analysis module
+    fig = analysis.plot_flask(user)
 
     # Make response
     canvas = FigureCanvasAgg(fig)
