@@ -11,7 +11,7 @@ def read_csv(csv_file):
 
     alltracks = []
     with open(csv_file, 'rb') as csvfile:
-        csv_tracks = csv.reader(csvfile, delimiter=';')
+        csv_tracks = csv.reader(csvfile, delimiter='\t')
         for track in csv_tracks:
             track[0] = int(track[0])
             alltracks.append(track)

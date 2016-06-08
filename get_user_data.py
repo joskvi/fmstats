@@ -18,7 +18,7 @@ def fetch_all_user_data(username):
                    '&api_key=fa26698d2bf6b5523524675364fe1003&limit=200'])
 
     def clean_xml(xml_tree):
-        return '\n'.join(xml_tree.split('\n')[13:-3])
+        return '\n'.join(xml_tree.split('\n')[12:-3])
 
     def report_progress(page, num_pages, width=50):
         '''
@@ -54,7 +54,7 @@ def fetch_all_user_data(username):
 
     print '\nUser data download complete.'
     create_csv_file(filename_xml_dump, filename_csv_dump)
-    print '\nXML and CSV files created.'
+    print 'XML and CSV files created.'
 
 def create_csv_file(xml_file, csv_file):
 
@@ -75,7 +75,7 @@ def create_csv_file(xml_file, csv_file):
         date = re.split(r'[, ]+', track.find('date').text)[0:3]
         date = ''.join([date[2], datefunc.month2num(date[1]), date[0]])
 
-        csvline = '{};{};{};{}\n'.format(date, artist.encode('utf-8'), name.encode('utf-8'), album.encode('utf-8'))
+        csvline = '{}\t{}\t{}\t{}\n'.format(date, artist.encode('utf-8'), name.encode('utf-8'), album.encode('utf-8'))
         f.write(csvline)
 
     f.close()
