@@ -43,6 +43,7 @@ def main(argv):
             alltracks = np.array(alltracks, dtype=object)
             analysis.create_plot(alltracks)
         elif opt == '--fetch':
+            print 'Fetch it!'
             get_user_data.fetch_all_user_data(username)
         elif opt == '--flask':
             app.debug = True
