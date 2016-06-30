@@ -8,7 +8,8 @@ import get_user_data
 from app import app
 
 # Set constants. Move this to separate file
-username = 'joskvi'
+username = 'mazjak_o'
+#username = 'joskvi'
 xml_file = 'alltracks_' + username + '.xml'
 csv_file = 'alltracks_' + username + '.csv'
 # SPECIFY APIKEY ALSO

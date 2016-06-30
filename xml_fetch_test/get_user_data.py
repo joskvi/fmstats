@@ -17,8 +17,14 @@ def fetch_all_user_data(username):
                    '&user=', username,
                    '&api_key=fa26698d2bf6b5523524675364fe1003&limit=200'])
 
-    def clean_xml(xml_tree):
-        return '\n'.join(xml_tree.split('\n')[13:-3])
+    def clean_xml(xml_tree, i, username):
+        alltracks = ET.fromstring(xml_tree.encode('utf-8'))
+        alltracks ='\n'.join( ET.tostring(alltracks[0], encoding='utf8', method='xml').split('\n')[13:-2])
+        filename_xml_dump = 'test_xml_' + username + str(i) + '.xml'
+        fh = open(filename_xml_dump, 'w+')
+        fh.write(alltracks)
+        fh.close()
+        return '\n'.join(xml_tree.split('\n'))
 
     def report_progress(page, num_pages, width=50):
         '''
@@ -36,21 +42,17 @@ def fetch_all_user_data(username):
     num_pages = int(tree[0].attrib['totalPages'])
 
     # File to save results, overwrites old file
-    fh = open(filename_xml_dump, 'w+')
-    fh.write('<alltracks>')
-
     print 'Initating user data request.'
 
+    i = 0
     # Send request and clean each response
     for page in range(1, num_pages+1):
+        i += 1
         time.sleep(2)
         report_progress(page, num_pages)
         response = requests.get(baseurl+'&page='+str(page))
-        xml_tree = clean_xml(response.text)
-        fh.write(xml_tree.encode('utf-8'))
+        xml_tree = clean_xml(response.text, i, username)
 
-    fh.write('</alltracks>')
-    fh.close()
 
     print '\nUser data download complete.'
     create_csv_file(filename_xml_dump, filename_csv_dump)
@@ -79,3 +81,6 @@ def create_csv_file(xml_file, csv_file):
         f.write(csvline)
 
     f.close()
+
+fetch_all_user_data('mazjak_o')
+fetch_all_user_data('joskvi')
