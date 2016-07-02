@@ -7,13 +7,18 @@ import analysis
 import get_user_data
 from app import app
 
-import config_local
+try:
+    import config_local as config
+except ImportError:
+    try:
+        import config
+    except ImportError:
+        raise ImportError('Cannot find a config file.')
 
 # Set constants. Move this to separate file
-username = config_local.USERS[0]
+username = config.USERS[0]
 xml_file = 'alltracks_' + username + '.xml'
 csv_file = 'alltracks_' + username + '.csv'
-# SPECIFY APIKEY ALSO
 
 def usage():
     print '''How to use fmstats:

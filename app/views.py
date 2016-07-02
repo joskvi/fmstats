@@ -1,7 +1,14 @@
 import analysis
 import StringIO
 
-import config_local
+try:
+    import config_local as config
+except ImportError:
+    try:
+        import config
+    except ImportError:
+        raise ImportError('Cannot find a config file.')
+
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from flask import render_template, make_response, request
@@ -18,7 +25,7 @@ def plot():
     # Return png image of matplotlib plot
 
     user = request.args.get('user')
-    user = config_local.USERS[0]
+    user = config.USERS[0]
 
     # Get figure from analysis module
     fig = analysis.plot_flask(user)
