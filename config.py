@@ -1,1 +1,1 @@
-API_KEY=XYZ_XYZ_XYZ_XYZ
+USERS = ['joskvi', 'mazjak_o']

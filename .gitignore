@@ -3,3 +3,5 @@ flask
 *.pyo
 *.csv
 *.xml
+backupdata
+config_local.py

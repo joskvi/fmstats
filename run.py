@@ -7,9 +7,10 @@ import analysis
 import get_user_data
 from app import app
 
+import config_local
+
 # Set constants. Move this to separate file
-username = 'mazjak_o'
-#username = 'joskvi'
+username = config_local.USERS[0]
 xml_file = 'alltracks_' + username + '.xml'
 csv_file = 'alltracks_' + username + '.csv'
 # SPECIFY APIKEY ALSO

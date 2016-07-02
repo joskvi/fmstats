@@ -1,6 +1,8 @@
 import analysis
 import StringIO
 
+import config_local
+
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from flask import render_template, make_response, request
 from app import app
@@ -16,7 +18,7 @@ def plot():
     # Return png image of matplotlib plot
 
     user = request.args.get('user')
-    user = 'joskvi'
+    user = config_local.USERS[0]
 
     # Get figure from analysis module
     fig = analysis.plot_flask(user)
