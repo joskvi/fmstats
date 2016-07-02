@@ -5,6 +5,7 @@ import xml.etree.cElementTree as ET
 import sys
 import datefunc
 
+# Import config file
 try:
     import config_local as config
 except ImportError:
