@@ -21,18 +21,16 @@ xml_file = 'alltracks_' + username + '.xml'
 csv_file = 'alltracks_' + username + '.csv'
 
 def usage():
-    print '''How to use fmstats:
-          -o specifies output file name.
-          -i specifies input file name. Must be .csv file, using ; as separator.
-          --plot to plot data
-          --fetch to download data. Use with argument csv or xml, to specify output filetype. Use with -o
-          --flask to start flask server hosting a simple application for showing user plots
-          '''
+    print '''\nFMstats\n
+--plot\t\tPlot data.
+--fetch\t\tDownload data.
+--flask\t\tStart flask server hosting a web application for showing user plots.
+'''
 
 def main(argv):
 
     try:
-        options, remainders = getopt.getopt(argv, 'hi:o:', ['help','plot','fetch','flask'])
+        options, remainders = getopt.getopt(argv, 'h', ['help','plot','fetch','flask'])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -41,10 +39,6 @@ def main(argv):
         if opt in ('-h', '--help'):
             usage()
             sys.exit()
-        elif opt == '-o':
-            output_filename = arg
-        elif opt == '-i':
-            input_filename = arg
         elif opt == '--plot':
             alltracks = analysis.read_csv(csv_file)
             alltracks = np.array(alltracks, dtype=object)
