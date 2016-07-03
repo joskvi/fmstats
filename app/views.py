@@ -24,11 +24,14 @@ def index():
 def plot():
     # Return png image of matplotlib plot
 
-    user = request.args.get('user')
-    user = config.USERS[0]
+    username = request.args.get('username')
+
+    # Check user validity
+    if not valid_user(username):
+        return 'Invalid input.', 202
 
     # Get figure from analysis module
-    fig = analysis.plot_flask(user)
+    fig = analysis.plot_flask(username)
 
     # Make response
     canvas = FigureCanvasAgg(fig)
@@ -38,3 +41,19 @@ def plot():
     response.headers['Content-Type'] = 'image/png'
 
     return response
+
+@app.route('/load_user_data')
+def load_user_data():
+
+    username = request.args.get('username')
+
+    # Check if a username is given and valid, and return response code to be read by client if not
+    if not username or not valid_user(username):
+        return 'Invalid input.', 202
+
+    return 'Data processed.'
+
+def valid_user(username):
+    if username not in config.USERS:
+        return False
+    return True
