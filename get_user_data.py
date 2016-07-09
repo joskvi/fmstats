@@ -18,8 +18,8 @@ def fetch_all_user_data(username):
     # Returns LastFM listening data on specified user.
     # Should do some checking on wether user exists.
 
-    filename_xml_dump = 'alltracks_' + username + '.xml'
-    filename_csv_dump = 'alltracks_' + username + '.csv'
+    filename_xml_dump = 'lastfm_data/' + username + '.xml'
+    filename_csv_dump = 'lastfm_data/' + username + '.csv'
     baseurl = ''.join(['http://ws.audioscrobbler.com/2.0/',
                    '?method=user.getrecenttracks',
                    '&user=', username,
@@ -27,7 +27,10 @@ def fetch_all_user_data(username):
                    '&limit=200'])
 
     def clean_xml(xml_tree):
-        return '\n'.join(xml_tree.split('\n')[13:-3])
+        xml_data = re.split('<track', xml_tree, maxsplit=2)[2]
+        xml_data = re.split('</recenttracks>', xml_data)[0]
+        return '<track' + xml_data
+        #return '\n'.join(xml_tree.split('\n')[12:-3])
 
     def report_progress(page, num_pages, width=50):
         '''
@@ -67,10 +70,6 @@ def fetch_all_user_data(username):
 
 def create_csv_file(xml_file, csv_file):
 
-    # ISSUES:
-    # Some occurences of ; in album names causes error, so maybe change delimiter
-    # Example: 20160512;David Bowie;Heroes - Single Version; 2002 Digital Remaster;Best of Bowie
-
     alltracks = ET.parse(xml_file).getroot()
     f = open(csv_file, 'w+')
 
@@ -80,8 +79,14 @@ def create_csv_file(xml_file, csv_file):
         name = track.find('name').text
         album = track.find('album').text
 
+        date = track.find('date')
+
+        # Check if track has date attribute. Skip element if not.
+        if date is None:
+            continue
+
         # Change date formatting from DD Month YYYY to YYYYMMDD
-        date = re.split(r'[, ]+', track.find('date').text)[0:3]
+        date = re.split(r'[, ]+', date.text)[0:3]
         date = ''.join([date[2], datefunc.month2num(date[1]), date[0]])
 
         csvline = '{}\t{}\t{}\t{}\n'.format(date, artist.encode('utf-8'), name.encode('utf-8'), album.encode('utf-8'))

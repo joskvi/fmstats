@@ -15,13 +15,13 @@ except ImportError:
     except ImportError:
         raise ImportError('Cannot find a config file.')
 
-# Set constants. Move this to separate file
+# Hard code user name and filename for test purposes
 username = config.USERS[0]
-xml_file = 'alltracks_' + username + '.xml'
-csv_file = 'alltracks_' + username + '.csv'
+csv_file = 'lastfm_data/' + username + '.csv'
 
 def usage():
     print '''\nFMstats\n
+Application for analysing and plotting listening history from LastFM. Options are:\n
 --plot\t\tPlot data.
 --fetch\t\tDownload data.
 --flask\t\tStart flask server hosting a web application for showing user plots.

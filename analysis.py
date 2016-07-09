@@ -175,7 +175,7 @@ def create_plot(alltracks, show=True):
 
 def plot_flask(user):
 
-    csv_file = 'alltracks_' + user + '.csv'
+    csv_file = 'lastfm_data/' + user + '.csv'
     alltracks = read_csv(csv_file)
     alltracks = np.array(alltracks, dtype=object)
 
