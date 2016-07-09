@@ -1,2 +1,2 @@
-USERS = ['joskvi', 'mazjak_o']
+USERS = ['joskvi']
 API_KEY = ''

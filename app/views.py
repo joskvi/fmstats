@@ -1,6 +1,6 @@
+# Local modules
 import analysis
-import StringIO
-
+import get_user_data
 try:
     import config_local as config
 except ImportError:
@@ -9,7 +9,8 @@ except ImportError:
     except ImportError:
         raise ImportError('Cannot find a config file.')
 
-
+# External modules
+import StringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from flask import render_template, make_response, request
 from app import app
@@ -27,7 +28,7 @@ def plot():
     username = request.args.get('username')
 
     # Check user validity
-    if not valid_user(username):
+    if not get_user_data.valid_user(username):
         return 'Invalid input.', 202
 
     # Get figure from analysis module
@@ -48,12 +49,11 @@ def load_user_data():
     username = request.args.get('username')
 
     # Check if a username is given and valid, and return response code to be read by client if not
-    if not username or not valid_user(username):
+    if not username or not get_user_data.valid_user(username):
         return 'Invalid input.', 202
 
-    return 'Data processed.'
+    if get_user_data.update_user_data(username):
+        return 'Data processed.'
+    else:
+        return 'Oops! Something appears to have gone wrong loading your music data.', 202
 
-def valid_user(username):
-    if username not in config.USERS:
-        return False
-    return True

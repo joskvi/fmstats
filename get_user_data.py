@@ -16,10 +16,9 @@ except ImportError:
 
 def fetch_all_user_data(username):
     # Returns LastFM listening data on specified user.
-    # Should do some checking on wether user exists.
 
-    filename_xml_dump = 'lastfm_data/' + username + '.xml'
-    filename_csv_dump = 'lastfm_data/' + username + '.csv'
+    xml_filename = 'lastfm_data/' + username + '.xml'
+    csv_filename = 'lastfm_data/' + username + '.csv'
     baseurl = ''.join(['http://ws.audioscrobbler.com/2.0/',
                    '?method=user.getrecenttracks',
                    '&user=', username,
@@ -48,7 +47,7 @@ def fetch_all_user_data(username):
     num_pages = int(tree[0].attrib['totalPages'])
 
     # File to save results, overwrites old file
-    fh = open(filename_xml_dump, 'w+')
+    fh = open(xml_filename, 'w+')
     fh.write('<alltracks>')
 
     print 'Initating user data request.'
@@ -65,7 +64,7 @@ def fetch_all_user_data(username):
     fh.close()
 
     print '\nUser data download complete.'
-    create_csv_file(filename_xml_dump, filename_csv_dump)
+    create_csv_file(xml_filename, csv_filename)
     print 'XML and CSV files created.'
 
 def create_csv_file(xml_file, csv_file):
@@ -77,12 +76,14 @@ def create_csv_file(xml_file, csv_file):
 
         artist = track.find('artist').text
         name = track.find('name').text
+
         album = track.find('album').text
+        if album is None:
+            album = '<no album data>'
 
         date = track.find('date')
-
-        # Check if track has date attribute. Skip element if not.
         if date is None:
+            # Skip track if no time stamp exists. Occurs if the song was scrobbling at the time the data was fetched.
             continue
 
         # Change date formatting from DD Month YYYY to YYYYMMDD
@@ -93,3 +94,43 @@ def create_csv_file(xml_file, csv_file):
         f.write(csvline)
 
     f.close()
+
+def valid_user(username):
+
+    baseurl = ''.join(['http://ws.audioscrobbler.com/2.0/',
+                   '?method=user.getinfo',
+                   '&user=', username,
+                   '&api_key=', config.API_KEY])
+
+    # Request user info from LastFM
+    response = requests.get(baseurl)
+    response = ET.fromstring(response.text.encode('utf-8'))
+    if response.attrib['status'] == 'ok':
+        return True
+    else:
+        return False
+
+def update_user_data(username):
+
+    csv_filename = 'lastfm_data/' + username + '.csv'
+
+    try:
+        csv_file = open(csv_filename)
+        csv_file.close()
+        # Data update should take place here.
+        return True
+    except IOError:
+        # The file doesn't exist, so all user data will be fetched.
+        pass
+    except Exception as e:
+        print sys.exc_info()[0], str(e)
+        return False
+
+    try:
+        print 'User doesn\'t appear to exist. Initating fetch of all user data.'
+        fetch_all_user_data(username)
+        return True
+    except Exception as e:
+        print sys.exc_info()[0], str(e)
+        return False
+
