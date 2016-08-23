@@ -7,3 +7,7 @@ git clone https://github.com/joskvi/fmstats
 virtualenv flask
 flask/bin/pip install -r requirements.txt
 ```
+The Flask server can now be run using
+```
+./run.py --flask
+```
