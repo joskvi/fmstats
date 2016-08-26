@@ -1,5 +1,5 @@
 # FMstats
-Pulls LastFM data and creates various stats.
+Pulls Last.fm data and creates various stats.
 ## Setup
 To clone and setup run:
 ```
@@ -8,7 +8,7 @@ virtualenv flask
 flask/bin/pip install -r requirements.txt
 mkdir lastfm_data
 ```
-After adding your LastFM API key to config.py (or config_local.py), the Flask server can be run using:
+After adding your Last.fm API key to config.py (or config_local.py), the Flask server can be run using:
 ```
 ./run.py --flask
 ```
