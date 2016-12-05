@@ -63,6 +63,11 @@ def most_played(alltracks, top_list_length, sort_by='artist'):
     artist_plays = np.array([unique,counts],dtype=object).T
     artist_plays = artist_plays[artist_plays[:,1].argsort()[::-1]]
 
+    # Add a category "others", lumping all other listenings into one category
+    # a = artist_plays[0:top_list_length, :]
+    # a = np.vstack((a, ['Others', sum(artist_plays[top_list_length:, 1])]))
+    # return a
+
     if np.shape(artist_plays)[0] < top_list_length:
         return artist_plays
     else:
@@ -180,5 +185,3 @@ def plot_flask(user):
     alltracks = np.array(alltracks, dtype=object)
 
     return create_plot(alltracks, show = False)
-
-
