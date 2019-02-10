@@ -1,7 +1,11 @@
 
-**/__pycache__
 .vscode/
+.ipynb_checkpoints/
+notebooks/
+
+**/__pycache__
+
 env/
 database.db
-
 secrets.py
+
