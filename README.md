@@ -1,5 +1,5 @@
 # FMstats
-Pulls Last.fm data and creates various stats.
+Pulls and stores Last.fm data.
 ## Setup
 To clone and setup run:
 ```
